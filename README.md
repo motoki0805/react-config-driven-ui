@@ -21,6 +21,25 @@ Atomic Design を採用し、「見た目（Template/Organism）」と「ロジ�
 - **UI Library**: React Bootstrap (Bootstrap 5)
 - **Language**: JavaScript (JSX)
 
+## アーキテクチャの仕組み
+
+このフレームワークは、**「設定ファイル(Config)」を「テンプレート(Template)」が読み解き、適切な「部品(Organism)」を配置する** という流れで画面を描画します。
+
+データとロジックは Page 層で管理され、Template を経由して末端の UI 部品に注入されます。
+
+![アーキテクチャ図](./architecture-workflow.png)
+
+### 処理の流れ
+
+1.  **定義と準備**
+    - `Page` コンポーネントが、画面の設計図である `Config` を読み込みます。
+    - 同時に、表示するデータ (`State`) や操作時の関数 (`Handlers`) を準備します。
+2.  **描画ループ**
+    - `Page` から全てを受け取った `Template` は、Config の配列をループ処理します。
+    - 各セクションの `sectionType` ('table' か 'element' か) を見て、適切な `Organism`（コンポーネント）を呼び出します。
+3.  **出力**
+    - 選ばれた `Organism` が、渡されたデータを使って最終的な HTML(DOM)を生成し、ブラウザに表示します。
+
 ## ディレクトリ構成
 
 Atomic Design に基づき、以下のように責務を分離しています。
