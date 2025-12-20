@@ -4,7 +4,7 @@ import { screenLayoutConfig } from '../config/ScreenConfig.jsx';
 import DynamicScreenTemplate from '../components/templates/DynamicScreenTemplate';
 
 const ContractPage = () => {
-const initialData = {
+  const initialData = {
     contractId: '404',
     contractName: 'テスト 太郎',
     contractDate: '2025/12/02',
@@ -36,10 +36,11 @@ const initialData = {
   // テンプレートに渡すデータを作成
   const currentData = {
     ...initialData,
-    tel: tel,   // 初期データのうち、telだけはStateの最新値で上書きして渡す
+    tel: tel, // 初期データのうち、telだけはStateの最新値で上書きして渡す
   };
 
   return (
+    // prettier-ignore
     <DynamicScreenTemplate
       title="契約詳細"             // タイトルを渡す
       config={screenLayoutConfig} // 画面構成設定を渡す

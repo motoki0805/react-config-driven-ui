@@ -6,37 +6,25 @@ import { layoutStyle } from '../../config/ScreenConfig';
 
 const DynamicScreenTemplate = ({ config, data, handlers, title }) => {
   return (
-    <Container 
-      className={layoutStyle.containerPadding} 
-      fluid 
-      style={{ maxWidth: 'fit-content', margin: '0' }} 
-    >
+    <Container className={layoutStyle.containerPadding} fluid style={{ maxWidth: 'fit-content', margin: '0' }}>
       <h3>{title}</h3>
       <hr />
 
       {config.map((sectionConfig) => {
-        // テーブルセクション 
+        // テーブルセクション
         if (sectionConfig.sectionType === 'table') {
           return (
             <div key={sectionConfig.id} className={layoutStyle.sectionSpacing}>
-              <SectionTable 
-                config={sectionConfig} 
-                data={data} 
-                handlers={handlers} 
-              />
+              <SectionTable config={sectionConfig} data={data} handlers={handlers} />
             </div>
           );
         }
 
-        // エレメントセクション (ボタンやフリーエリア) 
+        // エレメントセクション (ボタンやフリーエリア)
         if (sectionConfig.sectionType === 'element') {
           return (
             <div key={sectionConfig.id} className={layoutStyle.sectionSpacing}>
-              <SectionElement 
-                config={sectionConfig} 
-                data={data} 
-                handlers={handlers} 
-              />
+              <SectionElement config={sectionConfig} data={data} handlers={handlers} />
             </div>
           );
         }

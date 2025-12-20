@@ -18,7 +18,7 @@ const EstimatePage = () => {
 
     // 明細
     itemName: 'サーバー構築費用一式 (テスト)',
-    quantity: 1, 
+    quantity: 1,
     unitPrice: '¥500,000',
     amount: '¥500,000',
 
@@ -54,6 +54,7 @@ const EstimatePage = () => {
   };
 
   return (
+    // prettier-ignore
     <DynamicScreenTemplate
       title="見積詳細画面"             // 画面構成設定を渡す
       config={estimateLayoutConfig}   // 画面構成設定を渡す

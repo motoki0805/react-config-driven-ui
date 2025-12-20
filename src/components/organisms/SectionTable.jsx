@@ -50,12 +50,12 @@ const SectionTable = ({ config, data, handlers }) => {
           {fields.map((field, index) => {
             const isSpacer = field.type === 'spacer';
 
-            const mergedHeaderStyle = isSpacer 
-              ? { background: 'transparent', width: field.width } 
-              : { 
-                  ...headerStyleBase, 
-                  ...field.headerStyle, 
-                  ...(field.width ? { width: field.width } : {}) 
+            const mergedHeaderStyle = isSpacer
+              ? { background: 'transparent', width: field.width }
+              : {
+                  ...headerStyleBase,
+                  ...field.headerStyle,
+                  ...(field.width ? { width: field.width } : {}),
                 };
 
             const mergedHeaderClass = isSpacer
@@ -63,11 +63,7 @@ const SectionTable = ({ config, data, handlers }) => {
               : `bg-${headerVariant} text-white ${layoutStyle.headerStyle} ${field.headerClassName || ''}`;
 
             return (
-              <th
-                key={field.key || `spacer-${index}`}
-                className={mergedHeaderClass}
-                style={mergedHeaderStyle}
-              >
+              <th key={field.key || `spacer-${index}`} className={mergedHeaderClass} style={mergedHeaderStyle}>
                 {!isSpacer && field.label}
               </th>
             );
@@ -82,21 +78,15 @@ const SectionTable = ({ config, data, handlers }) => {
 
             const mergedCellStyle = isSpacer
               ? { background: 'transparent' }
-              : { 
-                  ...cellStyleBase, 
-                  ...field.style 
+              : {
+                  ...cellStyleBase,
+                  ...field.style,
                 };
 
-            const mergedCellClass = isSpacer
-              ? 'p-0 border-0'
-              : `${layoutStyle.cellPadding} ${field.className || ''}`;
+            const mergedCellClass = isSpacer ? 'p-0 border-0' : `${layoutStyle.cellPadding} ${field.className || ''}`;
 
             return (
-              <td
-                key={field.key || `spacer-${index}`}
-                className={mergedCellClass}
-                style={mergedCellStyle}
-              >
+              <td key={field.key || `spacer-${index}`} className={mergedCellClass} style={mergedCellStyle}>
                 {renderCellContent(field, data, handlers)}
               </td>
             );
