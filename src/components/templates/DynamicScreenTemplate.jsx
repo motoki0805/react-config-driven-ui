@@ -4,7 +4,7 @@ import SectionTable from '../organisms/SectionTable';
 import SectionElement from '../organisms/SectionElement';
 import { layoutStyle } from '../../config/ScreenConfig';
 
-const DynamicScreenTemplate = ({ config, data, handlers, title }) => {
+const DynamicScreenTemplate = ({ config, data, handlers, onDefaultChange, title }) => {
   return (
     <Container className={layoutStyle.containerPadding} fluid style={{ maxWidth: 'fit-content', margin: '0' }}>
       <h3>{title}</h3>
@@ -15,7 +15,7 @@ const DynamicScreenTemplate = ({ config, data, handlers, title }) => {
         if (sectionConfig.sectionType === 'table') {
           return (
             <div key={sectionConfig.id} className={layoutStyle.sectionSpacing}>
-              <SectionTable config={sectionConfig} data={data} handlers={handlers} />
+              <SectionTable config={sectionConfig} data={data} handlers={handlers} onDefaultChange={onDefaultChange} />
             </div>
           );
         }

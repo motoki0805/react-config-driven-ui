@@ -1,4 +1,4 @@
-import { Form, Button, Badge } from 'react-bootstrap';
+import { Button, Badge } from 'react-bootstrap';
 
 // 見積もり画面用のレイアウト定義
 export const estimateLayoutConfig = [
@@ -47,23 +47,15 @@ export const estimateLayoutConfig = [
       {
         key: 'quantity',
         label: '数量',
-        type: 'element',
+        type: 'input',
+        inputType: 'number',
         headerStyle: { width: '100px' },
-        element: (data, handlers) => (
-          <Form.Control
-            type="number"
-            size="sm"
-            value={data.quantity}
-            onChange={handlers.onQuantityChange}
-            style={{ textAlign: 'right' }}
-          />
-        ),
+        style: { textAlign: 'right' },
       },
       { key: 'unitPrice', label: '単価', type: 'text', headerStyle: { width: '150px' }, style: { textAlign: 'right' } },
       {
         key: 'amount',
         label: '金額',
-        type: 'text',
         headerStyle: { width: '150px' },
         style: { textAlign: 'right', fontWeight: 'bold' },
       },
