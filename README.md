@@ -139,29 +139,49 @@ export default EstimatePage;
 ```
 
 ---
-
 ## Configuration リファレンス
 
-### セクション設定 (`sectionType`)
+画面構成は「セクション」の配列で定義し、各セクション内の `fields` 配列で具体的な項目（フィールド）を設定します。
 
-| プロパティ      | 値                            | 説明                                               |
-| :-------------- | :---------------------------- | :------------------------------------------------- |
-| `sectionType`   | `'table'`                     | ラベルと値が並ぶテーブル形式のセクション。         |
-| `sectionType`   | `'element'`                   | ボタン群やフリーレイアウトを表示するセクション。   |
-| `headerVariant` | `'success'`, `'primary'` etc. | (Table のみ) ヘッダーの背景色 (Bootstrap カラー)。 |
+### 1. セクション設定 (`sectionType`)
 
-### フィールド設定 (`fields` 配列内)
+画面を構成するブロック単位の設定です。
 
-| プロパティ    | 値                  | 説明                                                                  |
-| :------------ | :------------------ | :-------------------------------------------------------------------- |
-| `label`       | `string`            | ヘッダーに表示する項目名。                                            |
-| `key`         | `string`            | `data` オブジェクトから値を参照するためのキー。                       |
-| `type`        | `'text'`            | 単純なテキストとしてデータを表示。                                    |
-| `type`        | `'element'`         | `element` プロパティで定義した JSX を表示。                           |
-| `type`        | `'spacer'`          | 透明な隙間を作る（セルの結合解除）。                                  |
-| `element`     | `JSX` or `Function` | 表示するコンポーネント。関数の場合 `(data, handlers) => JSX` となる。 |
-| `headerStyle` | `object`            | ヘッダーセル(`th`)へのスタイル (`width`等はここに記述)。              |
+| プロパティ | 型 | 必須 | 説明 |
+| :--- | :--- | :---: | :--- |
+| `id` | `string` | Yes | セクションを一意に識別するID。 |
+| `sectionType` | `string` | Yes | `'table'` (項目リスト) または `'element'` (自由配置エリア) を指定。 |
+| `headerVariant` | `string` | - | (`table`専用) ヘッダーの背景色。Bootstrapのテーマ名 (`primary`, `success`, `dark` 等) を指定。 |
+| `fields` | `array` | - | (`table`専用) セルに表示・入力する項目の設定配列。 |
+| `element` | `JSX`\|`Func` | - | (`element`専用) 表示する要素。関数の場合は `(data, handlers) => JSX`。 |
 
+### 2. フィールド設定 (`fields` 配列内)
+
+`SectionTable` 内の各列の設定です。`type` の値によって動作と必要なプロパティが変わります。
+
+#### **基本プロパティ**
+| プロパティ | 型 | 対応タイプ | 説明 |
+| :--- | :--- | :--- | :--- |
+| **`label`** | `string` | 全て | ヘッダー行に表示される項目名。 |
+| **`key`** | `string` | 全て | `data` オブジェクトのキー。値の参照や自動更新に使用。 |
+| **`type`** | `string` | 全て | `text` (表示), `input` (入力), `select` (選択), `checkbox` (点検), `element` (カスタム), `spacer` (空白)。 |
+
+#### **入力・選択専用プロパティ**
+| プロパティ | 型 | 対象タイプ | 説明 |
+| :--- | :--- | :--- | :--- |
+| `inputType` | `string` | `input` | HTMLのタイプ属性 (`number`, `date`, `tel`, `file` 等) を指定。 |
+| `options` | `array` | `select` | 選択肢の配列。`[{ label: '表示名', value: '値' }]` 形式。 |
+| `element` | `JSX`\|`Func` | `element` | 独自のコンポーネント。関数の場合は `(rowData, handlers) => JSX`。 |
+| `onChangeKey`| `string` | 入力系 | `onDefaultChange` 以外の独自更新処理を `handlers` から呼び出す際の関数名。 |
+
+#### **レイアウト・スタイル**
+| プロパティ | 型 | 説明 |
+| :--- | :--- | :--- |
+| `width` | `string` | 列の幅を指定 (例: `'150px'`, `'20%'`)。 |
+| `style` | `object` | データセル内の要素に適用するインラインスタイル (例: `{ textAlign: 'right' }`)。 |
+| `headerStyle` | `object` | ヘッダーセル (`th`) に適用するインラインスタイル。 |
+| `className` | `string` | データセル (`td`) に付与する CSS クラス名。 |
+| `headerClassName`| `string` | ヘッダーセル (`th`) に付与する CSS クラス名。 |
 ---
 
 ## インストールと実行
