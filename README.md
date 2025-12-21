@@ -182,6 +182,17 @@ export default EstimatePage;
 | `headerStyle` | `object` | ヘッダーセル (`th`) に適用するインラインスタイル。 |
 | `className` | `string` | データセル (`td`) に付与する CSS クラス名。 |
 | `headerClassName`| `string` | ヘッダーセル (`th`) に付与する CSS クラス名。 |
+
+### 3. 自動データ連携 (`onDefaultChange`)
+
+`type` が `input`, `select`, `checkbox` の場合、`Page` 層から `onDefaultChange` 関数を渡すことで、個別のハンドラを定義せずに自動で `State` を更新できます。
+
+#### **更新の仕組み**
+1. ユーザーが入力（またはチェック）操作を行う。
+2. フィールド設定の **`key`** プロパティに指定された文字列を、`data` オブジェクトのプロパティ名として使用する。
+3. `useFormHandler` が提供する `onDefaultChange` 関数が実行され、`data[key]` の値が最新の入力値で更新される。
+
+> **Note:** 特定の項目だけで独自のバリデーションや加工を行いたい場合は、各フィールドに `onChangeKey` を設定することで、`onDefaultChange` よりも優先して `handlers` 内の独自関数を実行させることが可能です。
 ---
 
 ## インストールと実行
