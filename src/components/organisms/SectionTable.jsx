@@ -1,5 +1,4 @@
-// テーブルセクション用コンポーネント
-import { Table } from 'react-bootstrap';
+import { Table, Form } from 'react-bootstrap';
 import { layoutStyle } from '../../config/ScreenConfig';
 
 const tableStyle = {
@@ -21,27 +20,67 @@ const cellStyleBase = {
   backgroundColor: '#fff',
 };
 
-// コンテンツ描画ロジック
-const renderCellContent = (field, data, handlers) => {
-  // 1. スペーサー
-  if (field.type === 'spacer') return null;
-
-  // 2. エレメント (JSX または 関数)
-  if (field.type === 'element') {
-    if (typeof field.element === 'function') {
-      // 関数なら data と handlers を渡して実行
-      return field.element(data, handlers);
-    }
-    return field.element;
-  }
-
-  // 3. 通常テキスト
-  const value = data && data[field.key] ? data[field.key] : '';
-  return value || '-';
-};
-
-const SectionTable = ({ config, data, handlers }) => {
+const SectionTable = ({ config, data, handlers, onDefaultChange }) => {
   const { headerVariant, fields } = config;
+
+  // 各セルの中身を描画する関数
+  const renderCellContent = (field, rowData) => {
+    const { type, key, onChangeKey } = field;
+
+    // ハンドラの優先順位判定
+    const handleChange = (newValue) => {
+      if (onChangeKey && handlers?.[onChangeKey]) {
+        // 独自ハンドラ (Configに onChangeKey がある場合)
+        handlers[onChangeKey](newValue, rowData);
+      } else if (onDefaultChange) {
+        // デフォルトハンドラ (上記がなく onDefaultChange がある場合)
+        onDefaultChange(key, newValue);
+      }
+    };
+
+    switch (type) {
+      // インプット
+      case 'input':
+        return (
+          <Form.Control
+            type={field.inputType || 'text'}
+            size="sm"
+            value={rowData[key] ?? ''}
+            onChange={(e) => handleChange(e.target.value)}
+            style={field.style}
+          />
+        );
+      // セレクトボックス
+      case 'select':
+        return (
+          <Form.Select
+            size="sm"
+            value={rowData[key] ?? ''}
+            onChange={(e) => handleChange(e.target.value)}
+            style={field.style}
+          >
+            {field.options?.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </Form.Select>
+        );
+      // チェックボックス
+      case 'checkbox':
+        return <Form.Check type="checkbox" checked={!!rowData[key]} onChange={(e) => handleChange(e.target.checked)} />;
+      // カスタムエレメント
+      case 'element':
+        return typeof field.element === 'function' ? field.element(rowData, handlers) : field.element;
+      // スペーサー
+      case 'spacer':
+        return null;
+      // テキスト
+      case 'text':
+      default:
+        return <span style={field.style}>{rowData[key] || '-'}</span>;
+    }
+  };
 
   return (
     <Table size="sm" style={tableStyle}>
@@ -49,45 +88,32 @@ const SectionTable = ({ config, data, handlers }) => {
         <tr>
           {fields.map((field, index) => {
             const isSpacer = field.type === 'spacer';
-
             const mergedHeaderStyle = isSpacer
               ? { background: 'transparent', width: field.width }
-              : {
-                  ...headerStyleBase,
-                  ...field.headerStyle,
-                  ...(field.width ? { width: field.width } : {}),
-                };
+              : { ...headerStyleBase, ...field.headerStyle, ...(field.width ? { width: field.width } : {}) };
 
             const mergedHeaderClass = isSpacer
               ? 'p-0 border-0'
               : `bg-${headerVariant} text-white ${layoutStyle.headerStyle} ${field.headerClassName || ''}`;
 
             return (
-              <th key={field.key || `spacer-${index}`} className={mergedHeaderClass} style={mergedHeaderStyle}>
+              <th key={field.key || `header-${index}`} className={mergedHeaderClass} style={mergedHeaderStyle}>
                 {!isSpacer && field.label}
               </th>
             );
           })}
         </tr>
       </thead>
-
       <tbody>
         <tr>
           {fields.map((field, index) => {
             const isSpacer = field.type === 'spacer';
-
-            const mergedCellStyle = isSpacer
-              ? { background: 'transparent' }
-              : {
-                  ...cellStyleBase,
-                  ...field.style,
-                };
-
+            const mergedCellStyle = isSpacer ? { background: 'transparent' } : { ...cellStyleBase, ...field.style };
             const mergedCellClass = isSpacer ? 'p-0 border-0' : `${layoutStyle.cellPadding} ${field.className || ''}`;
 
             return (
-              <td key={field.key || `spacer-${index}`} className={mergedCellClass} style={mergedCellStyle}>
-                {renderCellContent(field, data, handlers)}
+              <td key={field.key || `cell-${index}`} className={mergedCellClass} style={mergedCellStyle}>
+                {renderCellContent(field, data)}
               </td>
             );
           })}

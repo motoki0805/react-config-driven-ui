@@ -4,8 +4,8 @@ import EstimatePage from './pages/EstimatePage'; // 見積画面に切り替え
 function App() {
   return (
     <div className="App">
-      <ContractPage />
-      {/* <EstimatePage /> */}
+      {/* <ContractPage /> */}
+      <EstimatePage />
     </div>
   );
 }
