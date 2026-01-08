@@ -21,7 +21,13 @@ const cellStyleBase = {
 };
 
 const SectionTable = ({ config, data, handlers, onDefaultChange }) => {
-  const { headerVariant, fields } = config;
+  const { headerVariant, fields, headers: configHeaders, rows: configRows, tableStyle: configTableStyle } = config;
+
+  // headers の正規化: configHeaders があればそれを使用、なければ fields から生成
+  const displayHeaders = configHeaders || (fields ? [fields] : []);
+
+  // rows の正規化: configRows があればそれを使用、なければ fields から生成
+  const displayRows = configRows || (fields ? [fields] : []);
 
   // 各セルの中身を描画する関数
   const renderCellContent = (field, rowData) => {
@@ -83,41 +89,57 @@ const SectionTable = ({ config, data, handlers, onDefaultChange }) => {
   };
 
   return (
-    <Table size="sm" style={tableStyle}>
+    <Table size="sm" style={{ ...tableStyle, ...configTableStyle }}>
       <thead>
-        <tr>
-          {fields.map((field, index) => {
-            const isSpacer = field.type === 'spacer';
-            const mergedHeaderStyle = isSpacer
-              ? { background: 'transparent', width: field.width }
-              : { ...headerStyleBase, ...field.headerStyle, ...(field.width ? { width: field.width } : {}) };
+        {displayHeaders.map((headerRow, rowIndex) => (
+          <tr key={`header-row-${rowIndex}`}>
+            {headerRow.map((field, colIndex) => {
+              const isSpacer = field.type === 'spacer';
+              const mergedHeaderStyle = isSpacer
+                ? { background: 'transparent', width: field.width }
+                : { ...headerStyleBase, ...field.headerStyle, ...(field.width ? { width: field.width } : {}) };
 
-            const mergedHeaderClass = isSpacer
-              ? 'p-0 border-0'
-              : `bg-${headerVariant} text-white ${layoutStyle.headerStyle} ${field.headerClassName || ''}`;
+              const mergedHeaderClass = isSpacer
+                ? 'p-0 border-0'
+                : `bg-${headerVariant} text-white ${layoutStyle.headerStyle} ${field.headerClassName || ''}`;
 
-            return (
-              <th key={field.key || `header-${index}`} className={mergedHeaderClass} style={mergedHeaderStyle}>
-                {!isSpacer && field.label}
-              </th>
-            );
-          })}
-        </tr>
+              return (
+                <th
+                  key={field.key || `header-${rowIndex}-${colIndex}`}
+                  className={mergedHeaderClass}
+                  style={mergedHeaderStyle}
+                  rowSpan={field.rowSpan}
+                  colSpan={field.colSpan}
+                >
+                  {!isSpacer && field.label}
+                </th>
+              );
+            })}
+          </tr>
+        ))}
       </thead>
       <tbody>
-        <tr>
-          {fields.map((field, index) => {
-            const isSpacer = field.type === 'spacer';
-            const mergedCellStyle = isSpacer ? { background: 'transparent' } : { ...cellStyleBase, ...field.style };
-            const mergedCellClass = isSpacer ? 'p-0 border-0' : `${layoutStyle.cellPadding} ${field.className || ''}`;
+        {displayRows.map((row, rowIndex) => (
+          <tr key={`row-${rowIndex}`}>
+            {row.map((field, colIndex) => {
+              const isSpacer = field.type === 'spacer';
+              const mergedCellStyle = isSpacer ? { background: 'transparent' } : { ...cellStyleBase, ...field.style };
+              const mergedCellClass = isSpacer ? 'p-0 border-0' : `${layoutStyle.cellPadding} ${field.className || ''}`;
 
-            return (
-              <td key={field.key || `cell-${index}`} className={mergedCellClass} style={mergedCellStyle}>
-                {renderCellContent(field, data)}
-              </td>
-            );
-          })}
-        </tr>
+              return (
+                <td
+                  key={field.key || `cell-${rowIndex}-${colIndex}`}
+                  className={mergedCellClass}
+                  style={mergedCellStyle}
+                  rowSpan={field.rowSpan}
+                  colSpan={field.colSpan}
+                >
+                  {renderCellContent(field, data)}
+                </td>
+              );
+            })}
+          </tr>
+        ))}
       </tbody>
     </Table>
   );
